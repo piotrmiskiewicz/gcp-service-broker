@@ -66,7 +66,7 @@ func init() {
 
 func serve() {
 	logger := utils.NewLogger("gcp-service-broker")
-	db_service.New(logger)
+	db := db_service.New(logger)
 
 	// init broker
 	cfg, err := brokers.NewBrokerConfigFromEnv()
@@ -108,6 +108,7 @@ func serve() {
 	brokerAPI := brokerapi.New(serviceBroker, logger, credentials)
 	http.Handle("/", brokerAPI)
 	http.Handle("/docs", server.NewDocsHandler(cfg.Registry))
+	server.AddHealthHandler(db.DB())
 	http.ListenAndServe(":"+port, nil)
 }
 
