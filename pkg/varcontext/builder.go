@@ -62,7 +62,8 @@ func (builder *ContextBuilder) SetEvalConstants(constants map[string]interface{}
 // If the value is a string then it will be evaluated.
 type DefaultVariable struct {
 	Name      string      `json:"name" yaml:"name" validate:"required"`
-	Default   interface{} `json:"default" yaml:"default" validate:"required"`
+	Default   interface{} `json:"default" yaml:"default""`
+	Expression string     `json:"expression" yaml:"expression"`
 	Overwrite bool        `json:"overwrite" yaml:"overwrite"`
 	Type      string      `json:"type" yaml:"type" validate:"jsonschema_type"`
 }
@@ -71,6 +72,28 @@ type DefaultVariable struct {
 // if they're a string, it tries to evaluet it in the built up context.
 func (builder *ContextBuilder) MergeDefaults(brokerVariables []DefaultVariable) *ContextBuilder {
 	for _, v := range brokerVariables {
+		if v.Default == nil && v.Expression == ""{
+			continue
+		}
+
+		if _, exists := builder.context[v.Name]; exists && !v.Overwrite {
+			continue
+		}
+
+		if v.Default != nil {
+			if strVal, ok := v.Default.(string); ok {
+				builder.MergeEvalResult(v.Name, strVal, v.Type)
+			} else {
+				builder.context[v.Name] = v.Default
+			}
+			continue
+		}
+
+		if v.Expression != "" {
+			builder.MergeEvalResult(v.Name, v.Expression, v.Type)
+		}
+
+		/*
 		if v.Default == nil {
 			continue
 		}
@@ -88,6 +111,7 @@ func (builder *ContextBuilder) MergeDefaults(brokerVariables []DefaultVariable) 
 		if _, exists := builder.context[v.Name]; exists && !v.Overwrite {
 			continue
 		}
+		 */
 	}
 
 	return builder

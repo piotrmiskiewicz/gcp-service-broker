@@ -48,6 +48,8 @@ type BrokerVariable struct {
 	Details string `yaml:"details" validate:"required"`
 	// The default value of the field.
 	Default interface{} `yaml:"default,omitempty"`
+	// The expression which will be evaluated if the default value is empty
+	Expression string `yaml:"expression,omitempty"`
 	// If there are a limited number of valid values for this field then
 	// Enum will hold them in value:friendly name pairs
 	Enum map[interface{}]string `yaml:"enum,omitempty"`
