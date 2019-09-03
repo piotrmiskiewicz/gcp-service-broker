@@ -65,10 +65,11 @@ func ServiceDefinition() *broker.ServiceDefinition {
 		},
 		ProvisionInputVariables: []broker.BrokerVariable{
 			{
-				FieldName: "name",
-				Type:      broker.JsonTypeString,
-				Details:   "The name of the Cloud Bigtable instance.",
-				Default:   "pcf-sb-${counter.next()}-${time.nano()}",
+				FieldName:  "name",
+				Type:       broker.JsonTypeString,
+				Details:    "The name of the Cloud Bigtable instance.",
+				Default:    nil,
+				Expression: "pcf-sb-${counter.next()}-${time.nano()}",
 				Constraints: validation.NewConstraintBuilder().
 					MinLength(6).
 					MaxLength(33).
@@ -76,10 +77,11 @@ func ServiceDefinition() *broker.ServiceDefinition {
 					Build(),
 			},
 			{
-				FieldName: "cluster_id",
-				Type:      broker.JsonTypeString,
-				Details:   "The ID of the Cloud Bigtable cluster.",
-				Default:   "${str.truncate(20, name)}-cluster",
+				FieldName:  "cluster_id",
+				Type:       broker.JsonTypeString,
+				Details:    "The ID of the Cloud Bigtable cluster.",
+				Default:    nil,
+				Expression: "${str.truncate(20, name)}-cluster",
 				Constraints: validation.NewConstraintBuilder().
 					MinLength(6).
 					MaxLength(30).

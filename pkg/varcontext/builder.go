@@ -63,6 +63,7 @@ func (builder *ContextBuilder) SetEvalConstants(constants map[string]interface{}
 type DefaultVariable struct {
 	Name      string      `json:"name" yaml:"name" validate:"required"`
 	Default   interface{} `json:"default" yaml:"default" validate:"required"`
+	Expression string
 	Overwrite bool        `json:"overwrite" yaml:"overwrite"`
 	Type      string      `json:"type" yaml:"type" validate:"jsonschema_type"`
 }
@@ -79,8 +80,8 @@ func (builder *ContextBuilder) MergeDefaults(brokerVariables []DefaultVariable) 
 			continue
 		}
 
-		if strVal, ok := v.Default.(string); ok {
-			builder.MergeEvalResult(v.Name, strVal, v.Type)
+		if strVal, ok := v.Default.(string); ok && strVal == "" {
+			builder.MergeEvalResult(v.Name, v.Expression, v.Type)
 		} else {
 			builder.context[v.Name] = v.Default
 		}
