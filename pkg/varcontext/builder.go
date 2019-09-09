@@ -80,7 +80,7 @@ func (builder *ContextBuilder) MergeDefaults(brokerVariables []DefaultVariable) 
 			continue
 		}
 
-		if strVal, ok := v.Default.(string); ok && strVal == "" {
+		if strVal, ok := v.Default.(string); ok && strVal == "" && v.Expression != "" {
 			builder.MergeEvalResult(v.Name, v.Expression, v.Type)
 		} else {
 			builder.context[v.Name] = v.Default

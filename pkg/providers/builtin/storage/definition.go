@@ -110,8 +110,8 @@ func ServiceDefinition() *broker.ServiceDefinition {
 				Default:   "",
 				Expression: "pcf_sb_${counter.next()}_${time.nano()}",
 				Constraints: validation.NewConstraintBuilder(). // https://cloud.google.com/storage/docs/naming
-										Pattern("^[A-Za-z0-9_\\.]+$").
-										MinLength(3).
+										Pattern("^[A-Za-z0-9_\\.]*$").
+										//MinLength(3).
 										MaxLength(222).
 										Build(),
 			},
@@ -134,7 +134,7 @@ func ServiceDefinition() *broker.ServiceDefinition {
 			},
 		},
 		ProvisionComputedVariables: []varcontext.DefaultVariable{
-			{Name: "labels", Default: "${json.marshal(request.default_labels)}", Overwrite: true},
+			{Name: "labels", Default: "", Expression: "${json.marshal(request.default_labels)}", Overwrite: true},
 		},
 		DefaultRoleWhitelist: roleWhitelist,
 		BindInputVariables:   accountmanagers.ServiceAccountWhitelistWithDefault(roleWhitelist, "storage.objectAdmin"),
