@@ -33,6 +33,8 @@ const (
 	JsonTypeNumeric JsonType = "number"
 	JsonTypeInteger JsonType = "integer"
 	JsonTypeBoolean JsonType = "boolean"
+
+	automaticallyGeneratedValueSentence = "If do not specify this field, it will be generated automatically."
 )
 
 type JsonType string
@@ -89,7 +91,11 @@ func (bv *BrokerVariable) ToSchema() map[string]interface{} {
 	}
 
 	if bv.Details != "" {
-		schema[validation.KeyDescription] = bv.Details
+		if bv.Expression != "" {
+			schema[validation.KeyDescription] = fmt.Sprintf("%s %s", bv.Details, automaticallyGeneratedValueSentence)
+		} else {
+			schema[validation.KeyDescription] = bv.Details
+		}
 	}
 
 	if bv.Type != "" {
